@@ -14,6 +14,7 @@ bindir ?= ${prefix}/bin
 includedir ?= ${prefix}/include
 gprdir ?= ${prefix}/share/gpr
 VERSION = 0.1
+export LIBRARY_TYPE ?= relocatable
 
 
 all: build
@@ -24,11 +25,20 @@ strip: clean build_strip
 prof: clean build_prof
 .PHONY : install
 
-build:
-	${BUILDER} -p -P gnat/${PROJECT} ${FLAGS}
+
+
+build_libs:
+	${BUILDER} -P gnat/${PROJECT}_libs_build  ${FLAGS} -XAWS_BUILD=relocatable
+
+build_tools: build_libs
+	${BUILDER} -P gnat/${PROJECT}_tools_build  ${FLAGS}
+	-cd bin && ln -s casendra_cli csdownloader
+
+build: build_libs build_tools
 
 clean:
-	gnat clean -P gnat/${PROJECT}
-	## and control shoot to the head...
+	-gnat clean -P gnat/${PROJECT}_libs_build
+	-gnat clean -P gnat/${PROJECT}_tools_build
+## and control shoot to the head...
 	rm -rf bin/ obj/ lib/  tmp/ 
 

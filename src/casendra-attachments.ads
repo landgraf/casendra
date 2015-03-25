@@ -16,6 +16,7 @@ package Casendra.Attachments is
    procedure Download (Obj : in Attachments_T; 
 		       Connection : in out Casendra.Strata.Connection_T;
 		       Index : in Natural; 
-		       Dir : in String);
+		       Dir : in String;
+		       Callback : not null access procedure (Value : in Natural));
       
 end Casendra.Attachments;

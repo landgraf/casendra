@@ -10,8 +10,9 @@ package body Casendra.Cases is
    
    procedure Download_Attachment (Self : in out Case_T;
 				  Index : in Positive;
-				  Dir : in String := "/tmp/") is
+				  Dir : in String := "/tmp/";
+				  Callback : not null access procedure (Value : in Natural)) is
    begin
-      Casendra.Attachments.Download (Self.Attachments, Self.Connection, Index, Dir);
+      Casendra.Attachments.Download (Self.Attachments, Self.Connection, Index, Dir, Callback);
    end Download_Attachment;
 end Casendra.Cases;

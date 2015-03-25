@@ -4,7 +4,7 @@ package Casendra.Cases is
    type Case_T is limited private;
    
    procedure Init (Self : out Case_T; Case_Id : in String);
-   procedure Download_Attachment (Self : in out Case_T; Index : Positive; Dir : String := "/tmp/");
+   procedure Download_Attachment (Self : in out Case_T; Index : Positive; Dir : String := "/tmp/"; Callback : not null access procedure (Value : in Natural));
    
 private
    type Case_T is limited record

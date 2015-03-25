@@ -54,12 +54,14 @@ package body Casendra.Attachments is
 
    procedure Download (Obj : in Attachments_T;
 		       Connection : in out Casendra.Strata.Connection_T;
-		       Index : in Natural; Dir : in String) is
+		       Index : in Natural;
+		       Dir : in String;
+		       Callback : not null access procedure (Value : in Natural)) is
    begin
       if Index > Natural (Attachments_P.Length (Obj)) then
 	 raise Program_Error with "Index is out of range";
       end if;
-      Casendra.Attachment.Download (Obj (Index), Dir, Connection);
+      Casendra.Attachment.Download (Obj (Index), Dir, Connection, Callback);
    end Download;
 
 
