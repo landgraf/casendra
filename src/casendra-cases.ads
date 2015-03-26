@@ -5,6 +5,9 @@ package Casendra.Cases is
    
    procedure Init (Self : out Case_T; Case_Id : in String);
    procedure Download_Attachment (Self : in out Case_T; Index : Positive; Dir : String := "/tmp/"; Callback : not null access procedure (Value : in Natural));
+   -- TODO should return value rather print to terminal
+   -- to support another UIs
+   procedure Print_All_Attachmnents (Self : in Case_T; Numbered : Boolean := False; Deprecated : Boolean := False);
    
 private
    type Case_T is limited record

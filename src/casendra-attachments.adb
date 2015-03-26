@@ -3,11 +3,23 @@ with Ada.Text_IO;
 with Gnatcoll.JSON;
 package body Casendra.Attachments is
    
-   procedure Print_All (Obj : Attachments_T) is 
+   procedure Print_All (Obj : in Attachments_T;
+			Numbered : in Boolean := False;
+			Deprecated : in Boolean := False) is 
       use Ada.Text_IO;
+      Counter : Positive;
    begin
+      Counter := 1;
       for Att of Obj loop
+	 if Numbered then
+	    Put (Counter'Img & " => ");
+	    Counter := Counter + 1;
+	 end if;
+	 if not Deprecated and Att.Deprecated then
+	    goto Continue;
+	 end if;
 	 Put_Line("filename: " & To_String (Att.File_Name) & "Length = " & Natural'Image (Att.Length));
+	 <<Continue>>
       end loop;
    end Print_All;
 	 

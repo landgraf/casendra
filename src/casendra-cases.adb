@@ -4,7 +4,7 @@ package body Casendra.Cases is
    begin
       Casendra.Strata.Connect (Self.Connection);
       Self.Attachments := Casendra.Attachments.Init (Case_Id, Self.Connection);
-      Casendra.Attachments.Print_All (Self.Attachments);
+
       null;
    end Init;
    
@@ -15,4 +15,12 @@ package body Casendra.Cases is
    begin
       Casendra.Attachments.Download (Self.Attachments, Self.Connection, Index, Dir, Callback);
    end Download_Attachment;
+   
+   procedure Print_All_Attachmnents (Self : in Case_T;
+				     Numbered : Boolean := False;
+				     Deprecated : Boolean := False) is
+   begin
+      Casendra.Attachments.Print_All (Self.Attachments, Numbered, Deprecated);
+   end Print_All_Attachmnents;
+      
 end Casendra.Cases;

@@ -11,12 +11,14 @@ package Casendra.Attachments is
    function Init (Case_Id : in String;
 		 Connection : in out Casendra.Strata.Connection_T) return Attachments_T;
    
-   procedure Print_All (Obj : Attachments_T);
+   procedure Print_All (Obj        : in    Attachments_T;
+			Numbered   : in    Boolean := False;
+			Deprecated : in    Boolean := False);
    
-   procedure Download (Obj : in Attachments_T; 
+   procedure Download (Obj        : in     Attachments_T; 
 		       Connection : in out Casendra.Strata.Connection_T;
-		       Index : in Natural; 
-		       Dir : in String;
-		       Callback : not null access procedure (Value : in Natural));
+		       Index      : in     Natural; 
+		       Dir        : in     String;
+		       Callback   : not null access procedure (Value : in Natural));
       
 end Casendra.Attachments;
