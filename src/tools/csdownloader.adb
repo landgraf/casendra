@@ -4,6 +4,7 @@ with Ada.Text_IO;
 with Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;
+with Config_File;
 procedure Csdownloader is
    Working_On : Casendra.Cases.Case_T;
 
@@ -48,7 +49,7 @@ procedure Csdownloader is
      
    begin
       Casendra.Cases.Print_All_Attachmnents (Case_Object, Numbered => True, Deprecated => False);
-      Ada.Text_IO.Put ("Please enter attachment(-s) to dowmload separated by comma");
+      Ada.Text_IO.Put ("Please enter attachment(-s) to dowmload separated by comma : ");
       declare
 	 Raw_Selection : constant String := Ada.Text_IO.Get_Line;
 	 Delimeter : constant String := ",";
@@ -56,16 +57,14 @@ procedure Csdownloader is
 	 Cursor : Natural := 0;
 	 Next_Cursor : Natural := 0;
       begin
-	 if Retval'Length = 1 then
-	    goto Last;
+	 if Retval'Length /= 1 then
+	    for Index in Retval'First .. Retval'Last - 1 loop
+	       Next_Cursor := Ada.Strings.Fixed.Index (Raw_Selection (Cursor + 1 .. Raw_Selection'Last), Delimeter);
+	       Retval (Index) := String_To_Natural (Raw_Selection (Cursor + 1  .. Next_Cursor - 1));
+	       Cursor := Next_Cursor;
+	    end loop;
 	 end if;
-	 for Index in Retval'First .. Retval'Last - 1 loop
-	    Next_Cursor := Ada.Strings.Fixed.Index (Raw_Selection (Cursor + 1 .. Raw_Selection'Last), Delimeter);
-	    Retval (Index) := String_To_Natural (Raw_Selection (Cursor + 1  .. Next_Cursor - 1));
-	    Cursor := Next_Cursor;
-	 end loop;
 	 pragma Debug (Ada.Text_IO.Put_Line ("User input :" & Raw_Selection)); 
-     <<Last>>
 	 Retval (Retval'Last) := String_To_Natural (Raw_Selection (Cursor + 1 .. Raw_Selection'Last));
 	 return Retval;
       end;
@@ -76,6 +75,15 @@ begin
    Casendra.Cases.Init (Working_On, Ada.Command_Line.Argument (1));
    Selection := Select_Attachment_To_Download (Working_On);
    for Index of Selection.all loop
-      Casendra.Cases.Download_Attachment (Working_On, Index, Callback => Display_Progress'Access);
+      -- TODO Should be done in parallel
+      -- Have to find the way how to pass array 
+      Casendra.Cases.Download_Attachment (Working_On,
+					  Index, 
+					  Dir => Config_FIle.Get_String (Casendra.Config,
+									 "downloader.directory",
+									 False, 
+									 "/tmp/folder/"),
+					  Callback => Display_Progress'Access);
    end loop;
+   Free (Selection);
 end Csdownloader;
