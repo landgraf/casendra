@@ -18,7 +18,7 @@ package body Casendra.Attachments is
 	 if not Deprecated and Att.Deprecated then
 	    goto Continue;
 	 end if;
-	 Put_Line("filename: " & To_String (Att.File_Name) & "Length = " & Natural'Image (Att.Length));
+	 Put_Line("filename: " & To_String (Att.File_Name) & " ; Length = " & Natural'Image (Att.Length/1024) & " Kb");
 	 <<Continue>>
       end loop;
    end Print_All;

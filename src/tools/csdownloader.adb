@@ -5,6 +5,7 @@ with Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;
 with Config_File;
+with Casendra.Attachments;
 procedure Csdownloader is
    Working_On : Casendra.Cases.Case_T;
 
@@ -33,7 +34,7 @@ procedure Csdownloader is
 	 end if;
       end loop;
       Ada.Text_IO.Put (" ]");
-      Ada.Text_IO.Put(Downloaded'Img);
+      Ada.Text_IO.Put(Downloaded'Img & " %");
       
    end Display_Progress;
    
@@ -49,7 +50,7 @@ procedure Csdownloader is
      
    begin
       Casendra.Cases.Print_All_Attachmnents (Case_Object, Numbered => True, Deprecated => False);
-      Ada.Text_IO.Put ("Please enter attachment(-s) to dowmload separated by comma : ");
+      Ada.Text_IO.Put ("Please enter attachment(-s) to download separated by comma (Hit ENTER to dowload all): ");
       declare
 	 Raw_Selection : constant String := Ada.Text_IO.Get_Line;
 	 Delimeter : constant String := ",";
@@ -71,9 +72,24 @@ procedure Csdownloader is
       raise Program_Error;
    end Select_Attachment_To_Download;
    
+   Download_All : Boolean := False;
 begin
    Casendra.Cases.Init (Working_On, Ada.Command_Line.Argument (1));
    Selection := Select_Attachment_To_Download (Working_On);
+   Download_All := Selection'Length = 0;
+   if Download_All then
+      for Index in 1 .. Casendra.Attachments.Attachments_P.Length (Casendra.Cases.Attachments (Working_On)) loop
+	 Casendra.Cases.Download_Attachment (Working_On,
+					     Integer (Index), 
+					     Dir => Config_FIle.Get_String (Casendra.Config,
+									    "downloader.directory",
+									    False, 
+									    "/tmp/folder/"),
+					     Callback => Display_Progress'Access);
+	 
+      end loop;
+      goto Cleanup;
+   end if;
    for Index of Selection.all loop
       -- TODO Should be done in parallel
       -- Have to find the way how to pass array 
@@ -85,5 +101,6 @@ begin
 									 "/tmp/folder/"),
 					  Callback => Display_Progress'Access);
    end loop;
+<<Cleanup>>
    Free (Selection);
 end Csdownloader;

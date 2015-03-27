@@ -8,6 +8,7 @@ package Casendra.Cases is
    -- TODO should return value rather print to terminal
    -- to support another UIs
    procedure Print_All_Attachmnents (Self : in Case_T; Numbered : Boolean := False; Deprecated : Boolean := False);
+   function Attachments (Self : in Case_T) return Casendra.Attachments.Attachments_T;
    
 private
    type Case_T is limited record

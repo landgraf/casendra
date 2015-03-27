@@ -1,7 +1,8 @@
 with Ada.Directories;
 with Ada.Text_IO;
 package body Casendra.Cases is
-   
+   function Attachments (Self : in Case_T) return Casendra.Attachments.Attachments_T is (Self.Attachments);
+
    procedure Init (Self : out Case_T; Case_Id : in String) is
    begin
       Casendra.Strata.Connect (Self.Connection);
