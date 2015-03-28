@@ -44,6 +44,13 @@ package body Casendra.Strata is
       end if;
    end Get;
    
+   function Get_Comments_JSON (Case_Id : in String; Connection : in out Connection_T ) return String
+   is
+      URL : constant String := Cases_Suffix & Case_Id & "/comments/";
+   begin
+      return Get (URL, Connection);
+   end Get_Comments_JSON;
+	
    function Get_Attachments_JSON (Case_Id : in String; Connection : in out Connection_T ) return String
    is
      URL : constant String := Cases_Suffix & Case_Id & "/attachments/";

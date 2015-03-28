@@ -44,15 +44,8 @@ package body Casendra.Attachments is
 	    for Index in 1 .. Length (Attachments_JSON) loop
 	       declare
 		  Element_JSON : constant JSON_Value := Get (Attachments_JSON, Index);
-		  Element : Casendra.Attachment.Attachment_T;
+		  Element : Casendra.Attachment.Attachment_T := Casendra.Attachment.Init (Element_JSON);
 	       begin
-		  Element.UUID := (if Has_Field (Element_Json, "uuid") then Get (Element_JSON, "uuid") else Null_Unbounded_String);
-		  Element.Length := (if Has_Field (Element_JSON, "length") then Get (Element_JSON, "length") else 0);
-		  Element.URI := (if Has_Field (Element_JSON, "uri") then Get (Element_JSON, "uri") else Null_Unbounded_String);
-		  Element.FIle_Name := (if Has_Field (Element_JSON, "file_name") then Get (Element_JSON, "file_name") else  Null_Unbounded_String);
-		  Element.Description := (if Has_Field (Element_JSON, "description") then Get (Element_JSON, "description") else Null_Unbounded_String);
-		  Element.Mime_Type := (if Has_Field (Element_JSON, "mime_type") then Get (Element_JSON, "mime_type") else Null_Unbounded_String);
-		  Element.Deprecated := (if Has_Field (Element_JSON, "deprecated") then Get (Element_JSON, "deprecated") else False);
 		  Attachments.Attachments_P.Append (Retval, Element);
                end;
 	    end loop;

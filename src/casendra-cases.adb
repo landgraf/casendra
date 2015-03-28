@@ -1,5 +1,6 @@
 with Ada.Directories;
 with Ada.Text_IO;
+with Casendra.Comments;
 package body Casendra.Cases is
    function Attachments (Self : in Case_T) return Casendra.Attachments.Attachments_T is (Self.Attachments);
 
@@ -8,6 +9,7 @@ package body Casendra.Cases is
       Casendra.Strata.Connect (Self.Connection);
       Self.Id := To_Unbounded_String (Case_Id);
       Self.Attachments := Casendra.Attachments.Init (Case_Id, Self.Connection);
+      Self.Comments := Casendra.Comments.Init (Case_Id, Self.Connection);
       null;
    end Init;
    
@@ -15,7 +17,7 @@ package body Casendra.Cases is
 				  Index : in Positive;
 				  Dir : in String := "/tmp/";
 				  Callback : not null access procedure (Value : in Natural)) is
-      Subdir : constant String := Dir & '/' & To_String (Self.Id) & "/downloads/";
+      Subdir : constant String := Dir & '/' & To_String (Self.Id) & "/attachments/";
    begin
 
       if not Ada.Directories.Exists (Subdir) then

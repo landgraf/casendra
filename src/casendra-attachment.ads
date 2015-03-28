@@ -1,4 +1,5 @@
 with Casendra.Strata;
+with GNATCOLL.JSON;
 package Casendra.Attachment is
    
    type Attachment_T is record
@@ -17,6 +18,6 @@ package Casendra.Attachment is
 		       Dir : in String;
 		       Connection : in out Casendra.Strata.COnnection_T;
 		      Callback : not null access procedure (Value : in Natural));
-   
+   function Init (Element_JSON : GNATCOLL.JSON.JSON_Value) return Attachment_T;
 
 end Casendra.Attachment;

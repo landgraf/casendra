@@ -1,4 +1,5 @@
 with Casendra.Attachments;
+with Casendra.Comments;
 with Casendra.Strata;
 package Casendra.Cases is
    type Case_T is limited private;
@@ -16,6 +17,7 @@ private
       Connected : Boolean := False;
       Id : Unbounded_String := Null_Unbounded_String; -- FIXME Should be Case_Id_T
       Owner : Unbounded_String := Null_Unbounded_String;
+      Comments : Casendra.Comments.Comments_T;
       Attachments : Casendra.Attachments.Attachments_T;
    end record;
 end Casendra.Cases;
