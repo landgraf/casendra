@@ -8,5 +8,13 @@ package body Casendra.Comment is
       Element.Public := (if Has_Field (Element_JSON, "public") then Get (Element_JSON, "public") else False);
       return Element;
       
-   end Init;
+      end Init;
+
+      function To_Txt (Self : Comment_T) return String is
+      begin
+	 return To_String (Self.Text); -- FIXME
+      end To_Txt;
+
+
+
 end Casendra.Comment;

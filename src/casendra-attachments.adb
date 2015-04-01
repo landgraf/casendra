@@ -33,7 +33,7 @@ package body Casendra.Attachments is
       declare
 	 Response : constant String := Casendra.Strata.Get_Attachments_JSON (Case_Id, Connection);
       begin
-	 Response_JSON := GNATCOLL.JSON.Read (Response);
+	 Response_JSON := GNATCOLL.JSON.Read (Response, Filename => "");
       end;
       if Has_Field (Response_JSON, "attachment") then
 	 declare

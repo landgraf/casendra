@@ -12,6 +12,7 @@ package Casendra.Comments is
    function Init (Case_Id : in String;
 		  Connection : in out Casendra.Strata.Connection_T) return Comments_T;
    
+   procedure Save_All (Self : in Comments_T; Dir : in String);
    
    
 end Casendra.Comments;

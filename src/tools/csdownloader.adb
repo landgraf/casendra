@@ -16,25 +16,24 @@ procedure Csdownloader is
    
    procedure Free is new Ada.Unchecked_Deallocation (Natural_Array, Natural_Array_Access);
    
-   procedure Display_Progress (Percents_Left : in Natural) is
-      Downloaded : constant Natural := 100 - Percents_Left;
+   procedure Display_Progress (Percents_Downloaded : in Natural) is
       Screen_Width     : constant Natural := 100;
-      Number_Of_Spaces : constant Natural := Downloaded * Screen_Width / 100;
+      Number_Of_Arrows : constant Natural := Percents_Downloaded * Screen_Width / 100;
    begin
       
       Ada.Text_IO.Put(ASCII.ESC & "[2K" & ASCII.CR);
       Ada.Text_IO.Put ("[ ");
       for I in 1 .. Screen_Width loop
-	 if I < Number_Of_Spaces then
+	 if I < Number_Of_Arrows then
 	    Ada.Text_IO.Put ("=");
-	 elsif I > Number_Of_Spaces then
+	 elsif I > Number_Of_Arrows then
 	    Ada.Text_IO.Put ('.');
 	 else
 	    Ada.Text_IO.Put ('>');
 	 end if;
       end loop;
       Ada.Text_IO.Put (" ]");
-      Ada.Text_IO.Put(Downloaded'Img & " %");
+      Ada.Text_IO.Put(Percents_Downloaded'Img & " %");
       
    end Display_Progress;
    
@@ -71,36 +70,38 @@ procedure Csdownloader is
       end;
       raise Program_Error;
    end Select_Attachment_To_Download;
+   Dir : constant String := Config_FIle.Get_String (Casendra.Config,
+						    "downloader.directory",
+						    False, 
+						    "/tmp/folder/");
    
-   Download_All : Boolean := False;
+   
+
 begin
    Casendra.Cases.Init (Working_On, Ada.Command_Line.Argument (1));
+   
+   Casendra.Cases.Save_History (Working_On, Dir);
    Selection := Select_Attachment_To_Download (Working_On);
-   Download_All := Selection'Length = 0;
-   if Download_All then
+   
+   if Selection'Length = 0 then
       for Index in 1 .. Casendra.Attachments.Attachments_P.Length (Casendra.Cases.Attachments (Working_On)) loop
 	 Casendra.Cases.Download_Attachment (Working_On,
 					     Integer (Index), 
-					     Dir => Config_FIle.Get_String (Casendra.Config,
-									    "downloader.directory",
-									    False, 
-									    "/tmp/folder/"),
+					     Dir => Dir,
 					     Callback => Display_Progress'Access);
-	 
+	    
       end loop;
       goto Cleanup;
    end if;
    for Index of Selection.all loop
       -- TODO Should be done in parallel
       -- Have to find the way how to pass array 
-      Casendra.Cases.Download_Attachment (Working_On,
-					  Index, 
-					  Dir => Config_FIle.Get_String (Casendra.Config,
-									 "downloader.directory",
-									 False, 
-									 "/tmp/folder/"),
-					  Callback => Display_Progress'Access);
+	 Casendra.Cases.Download_Attachment (Working_On,
+					     Index, 
+					     Dir => Dir,
+					     Callback => Display_Progress'Access);
    end loop;
+   
 <<Cleanup>>
    Free (Selection);
 end Csdownloader;

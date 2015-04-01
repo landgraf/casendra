@@ -83,12 +83,13 @@ package body Casendra.Strata is
 	 while Left > 0 loop
 	    declare
 	       subtype Percents_T is Natural range 0 .. 100;
-	       Percents : Percents_T := Natural((Float(Left)/Float(Length))*100.0);
+	       Percents : Percents_T :=100 -  Natural((Float(Left)/Float(Length))*100.0);
 	    begin
 	       Progress (Percents);
 	    end;
 	    delay Interval;
 	 end loop;
+	 Progress (100 - Left);
       exception
 	 when others =>
 	    -- TODO ?? Send -1  to callback to indicate that something went wrong ??
@@ -117,7 +118,6 @@ package body Casendra.Strata is
 	 Ada.Streams.Stream_IO.Write (File, Buffer ( Buffer'First .. Last));
          Left := Left - Natural (Last);
       end loop;
-      pragma Debug (Ada.Text_IO.Put_Line ("DEBUG: FIle " & Filename & "  saved"));
       Ada.Streams.Stream_IO.Close (File);
    end Download;
 end Casendra.Strata;

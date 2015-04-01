@@ -11,6 +11,8 @@ package Casendra.Cases is
    procedure Print_All_Attachmnents (Self : in Case_T; Numbered : Boolean := False; Deprecated : Boolean := False);
    function Attachments (Self : in Case_T) return Casendra.Attachments.Attachments_T;
    
+   procedure Save_History (Self : in Case_T; Dir : in String := "/tmp/");
+   
 private
    type Case_T is limited record
       Connection : Casendra.Strata.Connection_T;

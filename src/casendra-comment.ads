@@ -10,4 +10,6 @@ package Casendra.Comment is
    function "=" (Left, Right : Comment_T) return Boolean is (Left.Date = Right.Date);
    
    function Init (Element_JSON : in GNATCOLL.JSON.JSON_Value) return Comment_T;
+   
+   function To_Txt (Self : Comment_T) return String;
 end Casendra.Comment;

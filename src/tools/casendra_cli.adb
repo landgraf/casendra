@@ -20,7 +20,6 @@ begin
    
    Ada.Text_IO.Put_Line (Command);
    if Command  = "csdownloader" then
-      Ada.Text_IO.Put_Line ("downloader");
       Csdownloader;
    end if;
 
