@@ -5,8 +5,17 @@ with Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;
 with Config_File;
+with GNAT.OS_Lib;
 with Casendra.Attachments;
 procedure Csdownloader is
+   
+   procedure Usage is
+      use Ada.Text_IO;
+   begin
+      Put_Line ("casendrda download <case number>");
+      Gnat.OS_Lib.OS_Exit (1);
+   end Usage;
+   
    Working_On : Casendra.Cases.Case_T;
 
    type Natural_Array is array (Positive range <>) of Natural;
@@ -65,6 +74,9 @@ procedure Csdownloader is
 	    end loop;
 	 end if;
 	 pragma Debug (Ada.Text_IO.Put_Line ("User input :" & Raw_Selection)); 
+	 if Raw_Selection = "" then
+	    return Retval;
+	 end if;
 	 Retval (Retval'Last) := String_To_Natural (Raw_Selection (Cursor + 1 .. Raw_Selection'Last));
 	 return Retval;
       end;
@@ -78,6 +90,11 @@ procedure Csdownloader is
    
 
 begin
+   if Ada.Command_Line.Argument_Count < 1 then
+      Usage;
+   end if;
+   
+
    Casendra.Cases.Init (Working_On, Ada.Command_Line.Argument (1));
    
    Casendra.Cases.Save_History (Working_On, Dir);

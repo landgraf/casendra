@@ -34,6 +34,6 @@ package body Casendra.Attachment is
 				Connection => Connection,
 			        Progress => Callback);
       pragma Debug (Ada.Text_IO.New_Line);
-      pragma Debug (Ada.Text_IO.Put_Line ("DEBUG: " & Filename &  "saved"));
+      pragma Debug (Ada.Text_IO.Put_Line ("DEBUG: " & Filename &  " saved"));
    end Download;
 end Casendra.Attachment;
