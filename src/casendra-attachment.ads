@@ -15,9 +15,9 @@ package Casendra.Attachment is
    function "=" (Left, Right : Attachment_T) return Boolean is (Left.URI = Right.URI);
    
    procedure Download (Obj : in Attachment_T; 
-		       Dir : in String;
-		       Connection : in out Casendra.Strata.COnnection_T;
-		      Callback : not null access procedure (Value : in Natural));
+             Dir : in String;
+             Connection : in out Casendra.Strata.COnnection_T;
+            Callback : not null access procedure (Value : in Natural));
    function Init (Element_JSON : GNATCOLL.JSON.JSON_Value) return Attachment_T;
 
 end Casendra.Attachment;

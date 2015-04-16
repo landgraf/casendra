@@ -20,19 +20,19 @@ package body Casendra.Attachment is
    end Init;
       
    procedure Download (Obj : in Attachment_T; Dir : in String; Connection : in out Casendra.Strata.Connection_T;
-							       Callback : not null access procedure (Value : in Natural)) is
+                            Callback : not null access procedure (Value : in Natural)) is
       Data : AWS.Response.Data;
       Filename : constant String :=  Dir & "/" & To_String (Obj.File_Name);
-	
+   
    begin
       if not Ada.Directories.Exists (Dir) then
-	 raise Program_Error with "Directory " & Dir & " doesn't exist";
+    raise Program_Error with "Directory " & Dir & " doesn't exist";
       end if;
       Casendra.Strata.Download (URI => To_String (Obj.URI),
-				Length => Obj.Length,
-				Filename => Filename,
-				Connection => Connection,
-			        Progress => Callback);
+            Length => Obj.Length,
+            Filename => Filename,
+            Connection => Connection,
+                 Progress => Callback);
       pragma Debug (Ada.Text_IO.New_Line);
       pragma Debug (Ada.Text_IO.Put_Line ("DEBUG: " & Filename &  " saved"));
    end Download;

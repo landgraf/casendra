@@ -16,11 +16,11 @@ package body Casendra.Strata is
       use type AWS.Net.SSL.Certificate.Object;
    begin
       AWS.Client.Create (Connection => Connection.Connection,
-			 Host => Strata_URI,
-			 User => User,
-			 Pwd  => Pass);
+          Host => Strata_URI,
+          User => User,
+          Pwd  => Pass);
       if AWS.Client.Get_Certificate (Connection.Connection) = AWS.Net.SSL.Certificate.Undefined then
-	 raise Program_Error with "not secured";
+    raise Program_Error with "not secured";
       end if;
    end Connect;
    
@@ -32,15 +32,15 @@ package body Casendra.Strata is
    begin
       AWS.Headers.Set.Add (Headers, "Accept", Content);
       AWS.Client.Get (Connection => Connection.Connection,
-		      URI => URI,
-		      Result => Response,
-		      Headers => Headers);
+            URI => URI,
+            Result => Response,
+            Headers => Headers);
       if AWS.Response.Status_Code (Response) in AWS.Messages.Success then
-	 return Aws.Response.Message_Body (Response);
+    return Aws.Response.Message_Body (Response);
       else
-	 raise Program_Error with "ERROR: Getting URL=" & URI & 
-	   "; with Status_Code = "  & AWS.Response.Status_Code (Response)'Img &
-	   "; Message: " & AWS.Response.Message_Body (Response) ;
+    raise Program_Error with "ERROR: Getting URL=" & URI & 
+      "; with Status_Code = "  & AWS.Response.Status_Code (Response)'Img &
+      "; Message: " & AWS.Response.Message_Body (Response) ;
       end if;
    end Get;
    
@@ -50,7 +50,7 @@ package body Casendra.Strata is
    begin
       return Get (URL, Connection);
    end Get_Comments_JSON;
-	
+   
    function Get_Attachments_JSON (Case_Id : in String; Connection : in out Connection_T ) return String
    is
      URL : constant String := Cases_Suffix & Case_Id & "/attachments/";
@@ -59,12 +59,12 @@ package body Casendra.Strata is
    end Get_Attachments_JSON;
    
    procedure Download (URI : in String;
-		       Length : in Natural;
-		       Connection : in out Connection_T;
-		       Filename : in String;
-		       Overwrite : in Boolean := False;
-		       Progress  : not null access 
-			 procedure (Left : in Natural) := Null_Progress'Access) is
+             Length : in Natural;
+             Connection : in out Connection_T;
+             Filename : in String;
+             Overwrite : in Boolean := False;
+             Progress  : not null access 
+          procedure (Left : in Natural) := Null_Progress'Access) is
       Buffer_Size : constant Ada.Streams.Stream_Element_Offset := 1000;
       File : Ada.Streams.Stream_IO.File_Type;
       Output_Stream : Ada.Streams.Stream_IO.Stream_Access;
@@ -74,49 +74,28 @@ package body Casendra.Strata is
       Left : Natural := Length;
       use type AWS.Client.Content_Bound;
       
-      task Monitor;
-      -- Starting monitoring thread which calls every *Interval* 
-      -- callback procedure to update client with the progress
-      task body Monitor is
-	 Interval : Duration := 1.0;
-      begin
-	 while Left > 0 loop
-	    declare
-	       subtype Percents_T is Natural range 0 .. 100;
-	       Percents : Percents_T :=100 -  Natural((Float(Left)/Float(Length))*100.0);
-	    begin
-	       Progress (Percents);
-	    end;
-	    delay Interval;
-	 end loop;
-	 Progress (100 - Left);
-      exception
-	 when others =>
-	    -- TODO ?? Send -1  to callback to indicate that something went wrong ??
-	    pragma Debug (Ada.Text_IO.Put_Line ("Exception in monitoring thread. Left = " & Left'Img & "; Length = " & Length'Img));
-      end Monitor;
-      
    begin
       if Ada.Directories.Exists (Filename) then
-	 if not Overwrite then
-	    pragma Debug (Ada.Text_IO.Put_Line ("File already exists. Skipping"));
-	    Left := 0;
-	    return;
-	 end if;
-	 Ada.Streams.Stream_IO.Open (File, Ada.Streams.Stream_IO.Out_File, Filename);
+    if not Overwrite then
+       pragma Debug (Ada.Text_IO.Put_Line ("File already exists. Skipping"));
+       Left := 0;
+       return;
+    end if;
+    Ada.Streams.Stream_IO.Open (File, Ada.Streams.Stream_IO.Out_File, Filename);
       else
-	 Ada.Streams.Stream_IO.Create (File, Ada.Streams.Stream_IO.Out_File, Filename);
+    Ada.Streams.Stream_IO.Create (File, Ada.Streams.Stream_IO.Out_File, Filename);
       end if;
       Output_Stream := Ada.Streams.Stream_IO.Stream (File);
       AWS.Client.Set_Streaming_Output (Connection.Connection, True);
       AWS.Client.Get (Connection.Connection,
-		      Response,
-		      URI);
+            Response,
+            URI);
       loop
          exit when Left = 0;
          AWS.Client.Read (Connection.Connection, Buffer, Last);
-	 Ada.Streams.Stream_IO.Write (File, Buffer ( Buffer'First .. Last));
+    Ada.Streams.Stream_IO.Write (File, Buffer ( Buffer'First .. Last));
          Left := Left - Natural (Last);
+         Progress (100 -  Natural((Float(Left)/Float(Length))*100.0));
       end loop;
       Ada.Streams.Stream_IO.Close (File);
    end Download;

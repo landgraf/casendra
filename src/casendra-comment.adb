@@ -12,7 +12,7 @@ package body Casendra.Comment is
 
       function To_Txt (Self : Comment_T) return String is
       begin
-	 return To_String (Self.Text); -- FIXME
+    return To_String (Self.Text); -- FIXME
       end To_Txt;
 
 

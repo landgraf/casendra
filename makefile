@@ -1,7 +1,7 @@
 BUILDER ?= gprbuild -p -gnat12 -gnata
 FLAGS ?=
 ifeq (${DEBUG}, True)
-	FLAGS +=  -gnata -ggdb -g -f
+	FLAGS +=  -gnata -ggdb -g -f -gnatVa
 else
 	DEBUG = False
 endif
