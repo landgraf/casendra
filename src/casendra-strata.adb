@@ -74,6 +74,32 @@ package body Casendra.Strata is
       Left : Natural := Length;
       use type AWS.Client.Content_Bound;
       
+      -- However this thread could be simply removed and Progress callback
+      -- called from the main thread it will lead issue with terminal window
+      -- updating too frequently and not readable
+      -- To keep readability we have to keep this thread unless we don't use terminal output anymore
+      task Monitor;
+      -- Starting monitoring thread which calls every *Interval* 
+      -- callback procedure to update client with the progress
+      task body Monitor is
+    Interval : Duration := 1.0;
+      begin
+    while Left > 0 loop
+       declare
+          subtype Percents_T is Natural range 0 .. 100;
+          Percents : Percents_T :=100 -  Natural((Float(Left)/Float(Length))*100.0);
+       begin
+          Progress (Percents);
+       end;
+       delay Interval;
+    end loop;
+    Progress (100 - Left);
+      exception
+    when others =>
+       -- TODO ?? Send -1  to callback to indicate that something went wrong ??
+       pragma Debug (Ada.Text_IO.Put_Line ("Exception in monitoring thread. Left = " & Left'Img & "; Length = " & Length'Img));
+      end Monitor;
+      
    begin
       if Ada.Directories.Exists (Filename) then
     if not Overwrite then
@@ -95,7 +121,6 @@ package body Casendra.Strata is
          AWS.Client.Read (Connection.Connection, Buffer, Last);
     Ada.Streams.Stream_IO.Write (File, Buffer ( Buffer'First .. Last));
          Left := Left - Natural (Last);
-         Progress (100 -  Natural((Float(Left)/Float(Length))*100.0));
       end loop;
       Ada.Streams.Stream_IO.Close (File);
    end Download;
