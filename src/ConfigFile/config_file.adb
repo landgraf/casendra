@@ -26,10 +26,10 @@
 
 pragma License (Modified_GPL);
 
-with Ada.Characters.Handling;		use Ada.Characters.Handling;
-with Ada.Strings;			use Ada.Strings;
-with Ada.Strings.Fixed;			use Ada.Strings.Fixed;
-with Ada.Text_IO;			use Ada.Text_IO;
+with Ada.Characters.Handling; 		use Ada.Characters.Handling;
+with Ada.Strings; 			use Ada.Strings;
+with Ada.Strings.Fixed; 			use Ada.Strings.Fixed;
+with Ada.Text_IO; 			use Ada.Text_IO;
 
 package body Config_File is
 
@@ -40,14 +40,14 @@ package body Config_File is
    -----------------
 
    function Get_Boolean
-     (This		: in Config_Data;
-      Key		: in String;
-      Must_Exist	: in Boolean := True;
-      Default		: in Boolean := False) return Boolean
+     (This		     : in Config_Data;
+      Key		      : in String;
+      Must_Exist	 : in Boolean := True;
+      Default		  : in Boolean := False) return Boolean
    is
-      Result		: constant String := Get_String
-                            (This, Key, Must_Exist, Boolean'Image (Default));
-      Trimmed_Result	: constant String := To_Lower (Trim (Result, Both));
+      Result		       : constant String := Get_String
+        (This, Key, Must_Exist, Boolean'Image (Default));
+      Trimmed_Result	 : constant String := To_Lower (Trim (Result, Both));
    begin
       if Trimmed_Result = "1" or else Trimmed_Result = "yes"
         or else Trimmed_Result = "true" or else Trimmed_Result = "enabled"
@@ -63,13 +63,13 @@ package body Config_File is
    ---------------
 
    function Get_Float
-     (This		: in Config_Data;
-      Key		: in String;
-      Must_Exist	: in Boolean := True;
-      Default		: in Float := 0.0) return Float
+     (This		     : in Config_Data;
+      Key		      : in String;
+      Must_Exist	 : in Boolean := True;
+      Default		  : in Float := 0.0) return Float
    is
-      Result		: constant String := Get_String
-                            (This, Key, Must_Exist, Float'Image (Default));
+      Result		 : constant String := Get_String
+        (This, Key, Must_Exist, Float'Image (Default));
    begin
       return Float'Value (Result);
    end Get_Float;
@@ -78,28 +78,28 @@ package body Config_File is
    -- Get_Integer --
    -----------------
    function Get_Integer
-     (This		: in Config_Data;
-      Key		: in String;
-      Must_Exist	: in Boolean := True;
-      Default		: in Integer := 0) return Integer 
+     (This		     : in Config_Data;
+      Key		      : in String;
+      Must_Exist	 : in Boolean := True;
+      Default		  : in Integer := 0) return Integer 
    is
-       Result : constant String := Get_String
-                        (This, Key, Must_Exist, Integer'Image (Default));
+      Result : constant String := Get_String
+        (This, Key, Must_Exist, Integer'Image (Default));
    begin
-       return Integer'Value (Result);
+      return Integer'Value (Result);
    end Get_Integer;
    --------------------
    -- Get_Long_Float --
    --------------------
 
    function Get_Long_Float
-     (This		: in Config_Data;
-      Key		: in String;
-      Must_Exist	: in Boolean := True;
-      Default		: in Long_Float := 0.0) return Long_Float
+     (This		     : in Config_Data;
+      Key		      : in String;
+      Must_Exist	 : in Boolean := True;
+      Default		  : in Long_Float := 0.0) return Long_Float
    is
-      Result		: constant String := Get_String
-                            (This, Key, Must_Exist, Long_Float'Image (Default));
+      Result		 : constant String := Get_String
+        (This, Key, Must_Exist, Long_Float'Image (Default));
    begin
       return Long_Float'Value (Result);
    end Get_Long_Float;
@@ -118,14 +118,14 @@ package body Config_File is
    ----------------
 
    function Get_String
-     (This		: in Config_Data;
-      Key		: in String;
-      Must_Exist	: in Boolean := True;
-      Default		: in String := "") return String
+     (This		     : in Config_Data;
+      Key		      : in String;
+      Must_Exist	 : in Boolean := True;
+      Default		  : in String := "") return String
    is
-      C			: Config_Hash.Cursor;
-      K			: constant Unbounded_String := 
-                            To_Unbounded_String (Key);
+      C			 : Config_Hash.Cursor;
+      K			 : constant Unbounded_String := 
+              To_Unbounded_String (Key);
    begin
       C := Config_Hash.Find (This.Data, K);
       if Config_Hash.Has_Element (C) then
@@ -143,16 +143,16 @@ package body Config_File is
    -- Is_Has_Key --
    ----------------
    function Is_Has_Key
-       (This    : in Config_Data;
-        Key     : in String) return Boolean 
+     (This    : in Config_Data;
+      Key     : in String) return Boolean 
    is 
-      C			: Config_Hash.Cursor;
-      K			: constant Unbounded_String := 
-                            To_Unbounded_String (Key);
+      C			 : Config_Hash.Cursor;
+      K			 : constant Unbounded_String := 
+              To_Unbounded_String (Key);
    begin
       C := Config_Hash.Find (This.Data, K);
       if Config_Hash.Has_Element (C) then
-          return True; 
+         return True; 
       end if;
       return False;
    end Is_Has_Key; 
@@ -161,16 +161,16 @@ package body Config_File is
    ----------
 
    procedure Load
-     (This		:    out Config_Data;
-      Filename		: in     String;
-      Read_Only		: in     Boolean := False)
+     (This		     :    out Config_Data;
+      Filename		 : in     String;
+      Read_Only		 : in     Boolean := False)
    is
-      File		: File_Type;
-      Opened		: Boolean := False;
+      File		  : File_Type;
+      Opened		 : Boolean := False;
 
       function Read_Line (F : in File_Type) return String is
-         Last		: Natural;
-         Result		: String (1 .. 256);
+         Last		  : Natural;
+         Result		 : String (1 .. 256);
       begin
          Get_Line (F, Result, Last);
          if Last = Result'Last then
@@ -189,9 +189,9 @@ package body Config_File is
 
       while not End_Of_File (File) loop
          declare
-            Key		: Unbounded_String;
-            Str		: constant String := Read_Line (File);
-            Value	: Unbounded_String;
+            Key		 : Unbounded_String;
+            Str		 : constant String := Read_Line (File);
+            Value	 : Unbounded_String;
          begin
             Split_Input (Str, Key, Value);
             Set_Unbounded_String (This, Key, Value);
@@ -215,12 +215,12 @@ package body Config_File is
    ----------
 
    procedure Save
-     (This		: in     Config_Data;
-      Filename		: in     String)
+     (This		    : in     Config_Data;
+      Filename		 : in     String)
    is
-      C			: Config_Hash.Cursor;
-      File		: File_Type;
-      Opened		: Boolean := False;
+      C			    : Config_Hash.Cursor;
+      File		  : File_Type;
+      Opened		 : Boolean := False;
    begin
       if This.Read_Only then
          raise CONFIG_READ_ONLY with "attempted to save read-only config";
@@ -232,9 +232,9 @@ package body Config_File is
       C := Config_Hash.First (This.Data);
       while C /= Config_Hash.No_Element loop
          declare
-            Out_Str	: constant String :=
-                            To_String (Config_Hash.Key (C)) & '='
-                            & Trim (To_String (Config_Hash.Element (C)), Both);
+            Out_Str	 : constant String :=
+                        To_String (Config_Hash.Key (C)) & '='
+                        & Trim (To_String (Config_Hash.Element (C)), Both);
          begin
             Put_Line (File, Out_Str);
             Config_Hash.Next (C);
@@ -256,9 +256,9 @@ package body Config_File is
    -----------------
 
    procedure Set_Boolean
-     (This		: in out Config_Data;
-      Key		: in     String;
-      Value		: in     Boolean)
+     (This		 : in out Config_Data;
+      Key		  : in     String;
+      Value		 : in     Boolean)
    is
    begin
       if Value then
@@ -273,9 +273,9 @@ package body Config_File is
    ---------------
 
    procedure Set_Float
-     (This		: in out Config_Data;
-      Key		: in     String;
-      Value		: in     Float)
+     (This		 : in out Config_Data;
+      Key		  : in     String;
+      Value		 : in     Float)
    is
    begin
       Set_String (This, Key, Float'Image (Value));
@@ -286,9 +286,9 @@ package body Config_File is
    -----------------
 
    procedure Set_Integer
-     (This		: in out Config_Data;
-      Key		: in     String;
-      Value		: in     Integer)
+     (This		 : in out Config_Data;
+      Key		  : in     String;
+      Value		 : in     Integer)
    is
    begin
       Set_String (This, Key, Integer'Image (Value));
@@ -299,9 +299,9 @@ package body Config_File is
    --------------------
 
    procedure Set_Long_Float
-     (This		: in out Config_Data;
-      Key		: in     String;
-      Value		: in     Long_Float)
+     (This		 : in out Config_Data;
+      Key		  : in     String;
+      Value		 : in     Long_Float)
    is
    begin
       Set_String (This, Key, Long_Float'Image (Value));
@@ -312,8 +312,8 @@ package body Config_File is
    -------------------
 
    procedure Set_Read_Only
-     (This		: in out Config_Data;
-      Value		: in     Boolean)
+     (This		 : in out Config_Data;
+      Value		 : in     Boolean)
    is
    begin
       This.Read_Only := Value;
@@ -324,9 +324,9 @@ package body Config_File is
    ----------------
 
    procedure Set_String
-     (This		: in out Config_Data;
-      Key		: in     String;
-      Value		: in     String)
+     (This		 : in out Config_Data;
+      Key		  : in     String;
+      Value		 : in     String)
    is
    begin
       Config_Hash.Include
@@ -340,11 +340,11 @@ package body Config_File is
    --------------------------
 
    procedure Set_Unbounded_String
-     (This		: in out Config_Data;
-      Key		: in     String;
-      Value		: in     Ada.Strings.Unbounded.Unbounded_String)
+     (This		 : in out Config_Data;
+      Key		  : in     String;
+      Value		 : in     Ada.Strings.Unbounded.Unbounded_String)
    is
-      K			: constant Unbounded_String := To_Unbounded_String (Key);
+      K			 : constant Unbounded_String := To_Unbounded_String (Key);
    begin
       if This.Read_Only then
          raise CONFIG_READ_ONLY with "attempted to write to read-only config";
@@ -355,9 +355,9 @@ package body Config_File is
 
 
    procedure Set_Unbounded_String
-     (This		: in out Config_Data;
-      Key		: in     Ada.Strings.Unbounded.Unbounded_String;
-      Value		: in     Ada.Strings.Unbounded.Unbounded_String)
+     (This		 : in out Config_Data;
+      Key		  : in     Ada.Strings.Unbounded.Unbounded_String;
+      Value		 : in     Ada.Strings.Unbounded.Unbounded_String)
    is
    begin
       if This.Read_Only then
@@ -372,11 +372,11 @@ package body Config_File is
    -----------------
 
    procedure Split_Input
-     (Input		: in     String;
-      Key		: in out Unbounded_String;
-      Value		: in out Unbounded_String)
+     (Input		 : in     String;
+      Key		  : in out Unbounded_String;
+      Value		 : in out Unbounded_String)
    is
-      Split_Pos		: Natural;
+      Split_Pos		 : Natural;
    begin
       Value := Null_Unbounded_String;
 
@@ -398,12 +398,12 @@ package body Config_File is
    -------------------
 
    function Trim_Nonprint (This : in String) return String is
-      Left		: Natural := This'Last + 1;
-      Right		: Natural := This'First;
+      Left		 : Natural := This'Last + 1;
+      Right		 : Natural := This'First;
    begin
-      for i in This'Range loop
-         if Character'Pos (This (i)) > 32 then
-            Left := i;
+      for I in This'Range loop
+         if Character'Pos (This (I)) > 32 then
+            Left := I;
             exit;
          end if;
       end loop;
@@ -412,9 +412,9 @@ package body Config_File is
          return "";
       end if;
 
-      for i in reverse This'Range loop
-         if Character'Pos (This (i)) > 32 then
-            Right := i;
+      for I in reverse This'Range loop
+         if Character'Pos (This (I)) > 32 then
+            Right := I;
             exit;
          end if;
       end loop;

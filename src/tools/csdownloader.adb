@@ -47,14 +47,10 @@ procedure Csdownloader is
    end Display_Progress;
    
    function Select_Attachment_To_Download (Case_Object : in Casendra.Cases.Case_T) return Natural_Array_Access  is
-     function String_To_Natural (Input : in String) return Natural is
-     begin
-       return Natural'Value (Input);
-     exception
-       when Constraint_Error =>
-         pragma Debug (Ada.Text_IO.Put_Line ("Unable to convert " & Input & " to digits"));
-         raise;
-     end String_To_Natural;
+      function String_To_Natural (Input : in String) return Natural is
+      begin
+         return Natural'Value (Input);
+      end String_To_Natural;
 
    begin
      Casendra.Cases.Print_All_Attachmnents (Case_Object, Numbered => True, Deprecated => False);
@@ -104,14 +100,23 @@ begin
    Casendra.Cases.Init (Working_On, Ada.Command_Line.Argument (1));
    
    Casendra.Cases.Save_History (Working_On, Dir);
-   Selection := Select_Attachment_To_Download (Working_On);
+   loop
+  Try:
+      begin
+         Selection := Select_Attachment_To_Download (Working_On);
+         exit;
+      exception
+         when others =>
+            Ada.Text_IO.Put_Line ("Invalid input. Please try again!");
+      end Try;
+   end loop;
    
    if Selection = null then
       for Index in 1 .. Casendra.Attachments.Attachments_P.Length (Casendra.Cases.Attachments (Working_On)) loop
         Casendra.Cases.Download_Attachment (Working_On,
-                    Integer (Index), 
-                    Dir => Dir,
-                    Callback => Display_Progress'Access);
+                                            Integer (Index), 
+                                            Dir => Dir,
+                                            Callback => Display_Progress'Access);
          
       end loop;
       goto Cleanup;

@@ -15,11 +15,11 @@ package Casendra.Cases is
    
 private
    type Case_T is limited record
-      Connection : Casendra.Strata.Connection_T;
-      Connected : Boolean := False;
-      Id : Unbounded_String := Null_Unbounded_String; -- FIXME Should be Case_Id_T
-      Owner : Unbounded_String := Null_Unbounded_String;
-      Comments : Casendra.Comments.Comments_T;
+      Connection  : Casendra.Strata.Connection_T;
+      Connected   : Boolean := False;
+      Id          : Unbounded_String := Null_Unbounded_String; -- FIXME Should be Case_Id_T
+      Owner       : Unbounded_String := Null_Unbounded_String;
+      Comments    : Casendra.Comments.Comments_T;
       Attachments : Casendra.Attachments.Attachments_T;
    end record;
 end Casendra.Cases;

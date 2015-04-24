@@ -10,13 +10,13 @@ package Casendra.Strata is
    procedure Connect (Connection : out Connection_T);
    procedure Null_Progress (Value : in Natural) is null;
    
-   procedure Download (URI : in String;
-             Length : in Natural;
-             Connection : in out Connection_T;
-             Filename : in String;
-             Overwrite : in Boolean := False;
-             Progress  : not null access 
-          procedure (Left : in Natural) := Null_Progress'Access);
+   procedure Download (URI                           : in String;
+                       Length                        : in Natural;
+                       Connection                    : in out Connection_T;
+                       Filename                      : in String;
+                       Overwrite                     : in Boolean := False;
+                       Progress                      : not null access 
+                         procedure (Left : in Natural) := Null_Progress'Access);
    
 private
    Strata_URI : constant String := Config_File.Get_String (Config, "strata.host", False, "https://localhost/");
