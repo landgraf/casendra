@@ -7,6 +7,7 @@ with Ada.Strings.Fixed;
 with Config_File;
 with GNAT.OS_Lib;
 with Casendra.Attachments;
+with Casendra.Text_Utils;
 procedure Csdownloader is
    
    procedure Usage is
@@ -17,13 +18,9 @@ procedure Csdownloader is
    end Usage;
    
    Working_On : Casendra.Cases.Case_T;
-
-   type Natural_Array is array (Positive range <>) of Natural;
-   type Natural_Array_Access is access all Natural_Array;
    
-   Selection : Natural_Array_Access := null;
+   Selection : Casendra.Text_Utils.Natural_Array_Access := null;
    
-   procedure Free is new Ada.Unchecked_Deallocation (Natural_Array, Natural_Array_Access);
    
    procedure Display_Progress (Percents_Downloaded : in Natural) is
       Screen_Width     : constant Natural := 100;
@@ -46,39 +43,21 @@ procedure Csdownloader is
       
    end Display_Progress;
    
-   function Select_Attachment_To_Download (Case_Object : in Casendra.Cases.Case_T) return Natural_Array_Access  is
-      function String_To_Natural (Input : in String) return Natural is
-      begin
-         return Natural'Value (Input);
-      end String_To_Natural;
-
+   function Select_Attachment_To_Download (Case_Object : in Casendra.Cases.Case_T) return Casendra.Text_Utils.Natural_Array_Access  is
    begin
      Casendra.Cases.Print_All_Attachmnents (Case_Object, Numbered => True, Deprecated => False);
      Ada.Text_IO.Put ("Please enter attachment(-s) to download separated by comma (Hit ENTER to dowload all): ");
      declare
        Raw_Selection : constant String := Ada.Text_IO.Get_Line;
        Delimeter : constant String := ",";
-       Retval : Natural_Array_Access := null;
+       Retval : Casendra.Text_Utils.Natural_Array_Access := null;
        Cursor : Natural := 0;
        Next_Cursor : Natural := 0;
      begin
        if Raw_Selection'Length = 0 then
          return Retval;
        end if;
-       Retval := new Natural_Array (1 .. Ada.Strings.Fixed.Count (Raw_Selection, Delimeter) + 1);
-
-       if Retval'Length /= 1 then
-         for Index in Retval'First .. Retval'Last - 1 loop
-           Next_Cursor := Ada.Strings.Fixed.Index (Raw_Selection (Cursor + 1 .. Raw_Selection'Last), Delimeter);
-           Retval (Index) := String_To_Natural (Raw_Selection (Cursor + 1  .. Next_Cursor - 1));
-           Cursor := Next_Cursor;
-         end loop;
-       end if;
-       pragma Debug (Ada.Text_IO.Put_Line ("User input :" & Raw_Selection)); 
-       if Raw_Selection = "" then
-         return Retval;
-       end if;
-       Retval (Retval'Last) := String_To_Natural (Raw_Selection (Cursor + 1 .. Raw_Selection'Last));
+       Retval := new Casendra.Text_Utils.Natural_Array'(Casendra.Text_Utils.String_To_Natural_Array (Raw_Selection, Delimeter));
        return Retval;
      end;
      raise Program_Error;
@@ -90,6 +69,7 @@ procedure Csdownloader is
                       "/tmp/folder/");
    
    
+   use type Casendra.Text_Utils.Natural_Array_Access;
 
 begin
    if Ada.Command_Line.Argument_Count < 1 then
@@ -132,6 +112,6 @@ begin
    
 <<Cleanup>>
   if Selection /= null then
-   Free (Selection);
+   Casendra.Text_Utils.Free (Selection);
   end if;
 end Csdownloader;
