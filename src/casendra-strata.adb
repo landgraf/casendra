@@ -67,6 +67,7 @@ package body Casendra.Strata is
                        Progress                      : not null access 
                          procedure (Left : in Natural) := Null_Progress'Access) is
       Buffer_Size   : constant Ada.Streams.Stream_Element_Offset := 1000;
+      Tmp_Filename  : constant String := Filename & ".part"; -- Firefox style
       File          : Ada.Streams.Stream_IO.File_Type;
       Output_Stream : Ada.Streams.Stream_IO.Stream_Access;
       Buffer        : Ada.Streams.Stream_Element_Array (1 .. Buffer_Size);
@@ -115,15 +116,19 @@ package body Casendra.Strata is
       end Monitor;
       
    begin
+     -- removing any leftovers
+     if Ada.Directories.Exists (Tmp_Filename) then
+       Ada.Directories.Delete_File (Tmp_Filename);
+     end if;
       if Ada.Directories.Exists (Filename) then
          if not Overwrite then
             pragma Debug (Ada.Text_IO.Put_Line ("File already exists. Skipping"));
             Left := 0;
             return;
          end if;
-         Ada.Streams.Stream_IO.Open (File, Ada.Streams.Stream_IO.Out_File, Filename);
+         Ada.Streams.Stream_IO.Open (File, Ada.Streams.Stream_IO.Out_File, Tmp_Filename);
       else
-         Ada.Streams.Stream_IO.Create (File, Ada.Streams.Stream_IO.Out_File, Filename);
+         Ada.Streams.Stream_IO.Create (File, Ada.Streams.Stream_IO.Out_File, Tmp_Filename);
       end if;
       Output_Stream := Ada.Streams.Stream_IO.Stream (File);
       AWS.Client.Set_Streaming_Output (Connection.Connection, True);
@@ -137,5 +142,7 @@ package body Casendra.Strata is
          Left := Left - Natural (Last);
       end loop;
       Ada.Streams.Stream_IO.Close (File);
+      -- Assuming move operation is atomic inside of the FS
+      Ada.Directories.Rename (Tmp_Filename, Filename);
    end Download;
 end Casendra.Strata;

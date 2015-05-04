@@ -32,7 +32,7 @@ build_libs:
 
 build_tools: build_libs
 	${BUILDER} -P gnat/${PROJECT}_tools_build  ${FLAGS}
-	-cd bin && ln -s casendra_cli csdownloader
+	-cd bin && ln -s casendra_cli csdownloader && ln -s casendra_cli casendrad
 
 build: build_libs build_tools
 
