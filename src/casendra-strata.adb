@@ -66,7 +66,7 @@ package body Casendra.Strata is
                        Overwrite                     : in Boolean := False;
                        Progress                      : not null access 
                          procedure (Left : in Natural) := Null_Progress'Access) is
-      Buffer_Size   : constant Ada.Streams.Stream_Element_Offset := 1000;
+      Buffer_Size   : constant Ada.Streams.Stream_Element_Offset := 10000;
       Tmp_Filename  : constant String := Filename & ".part"; -- Firefox style
       File          : Ada.Streams.Stream_IO.File_Type;
       Output_Stream : Ada.Streams.Stream_IO.Stream_Access;
