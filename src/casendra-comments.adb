@@ -56,7 +56,7 @@ package body Casendra.Comments is
       else
          Ada.Text_IO.Create (File, Ada.Text_IO.Out_File, Filename);
       end if;
-      Ada.Text_IO.Set_Line_Length (File, 100);
+      -- Ada.Text_IO.Set_Line_Length (File, 100);
       Ada.Text_IO.Put_Line ("Saving comments: " & Filename);
       for Comment of Self loop
          declare

@@ -1,0 +1,19 @@
+with "aws";
+with "gnatcoll";
+with "directories";
+library project Casendra_Libs is
+  -- TODO separate Configfile
+  for Source_Dirs use ("../src", "../src/ConfigFile/");
+  for Object_Dir use "../obj";
+  for Library_Dir use "../lib";
+  for Exec_Dir use "../bin";
+  for Library_Kind use "relocatable";
+  for Library_Name use "casendra";
+  for Languages use ("Ada");
+  for Library_Version use "lib" & Project'Library_Name & ".so." & "0.1";
+
+  package Install is
+    for Lib_Subdir use Directories.Lib & "/casendra/";
+    for Sources_Dubdir use Directories.Includedir;
+  end Install;
+end Casendra_Libs;

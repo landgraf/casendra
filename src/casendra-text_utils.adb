@@ -19,6 +19,10 @@ package body casendra.text_utils is
         Retval (Index) := String_To_Natural (Input (Cursor + 1  .. Next_Cursor - 1));
         Cursor := Next_Cursor;
       end loop;
+      -- Add last numeric value
+      Retval (Retval'Last) := String_To_Natural (Input (Cursor + 1 .. Input'last));
+    else
+      Retval (1) := String_To_Natural (Input);
     end if;
     return Retval;
   end String_To_Natural_Array;
