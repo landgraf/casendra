@@ -9,6 +9,7 @@ with AWS.Net.SSL.Certificate;
 with Ada.Streams.Stream_IO;
 with AWS.URL;
 with Ada.Text_IO;
+with Interfaces.C.Strings;
 
 
 package body Casendra.Strata is
@@ -59,13 +60,36 @@ package body Casendra.Strata is
       return Get (URL, Connection);
    end Get_Attachments_JSON;
    
+   function Get_Case_JSON (Case_Id      : in     String;
+                          Connection    : in out Connection_T) return String
+   is
+      URL : constant String := Cases_Suffix & Case_Id;
+   begin
+      return Get (URL, Connection);
+   end Get_Case_JSON;
+
+   
    procedure Download (URI                           : in String;
                        Length                        : in Natural;
+                       Uuid                          : in String;
                        Connection                    : in out Connection_T;
                        Filename                      : in String;
                        Overwrite                     : in Boolean := False;
                        Progress                      : not null access 
                          procedure (Left : in Natural) := Null_Progress'Access) is
+      procedure Symlink (Source : in String; Target : in String) is
+         package C renames Interfaces.C;
+         use type C.Int;
+         function C_Symlink (path1: C.Strings.Chars_Ptr; path2 : C.Strings.Chars_Ptr)
+                            return Interfaces.C.Int with Import, Convention => C, External_Name => "symlink";
+         procedure Perror with Import, Convention => C, External_Name => "perror";
+      begin
+         if C_Symlink (C.Strings.New_String (Source), C.Strings.New_String (Target)) /= 0 then
+            pragma Debug (Ada.Text_Io.Put_Line ("Failed to create uuid symlink" ));
+            pragma Debug (Perror);
+         end if;
+      end Symlink;
+      
       Buffer_Size   : constant Ada.Streams.Stream_Element_Offset := 10000;
       Tmp_Filename  : constant String := Filename & ".part"; -- Firefox style
       File          : Ada.Streams.Stream_IO.File_Type;
@@ -135,14 +159,24 @@ package body Casendra.Strata is
       AWS.Client.Get (Connection.Connection,
                       Response,
                       URI);
-      loop
-         exit when Left = 0;
-         AWS.Client.Read (Connection.Connection, Buffer, Last);
-         Ada.Streams.Stream_IO.Write (File, Buffer ( Buffer'First .. Last));
-         Left := Left - Natural (Last);
-      end loop;
+   Try:
+      begin
+         loop
+            exit when Left = 0;
+            AWS.Client.Read (Connection.Connection, Buffer, Last);
+            Ada.Streams.Stream_IO.Write (File, Buffer ( Buffer'First .. Last));
+            Left := Left - Natural (Last);
+         end loop;
+      exception
+         when others => 
+            Left := 0;
+            Ada.Streams.Stream_IO.Close (File);
+            return;
+      end Try;
       Ada.Streams.Stream_IO.Close (File);
       -- Assuming move operation is atomic inside of the FS
       Ada.Directories.Rename (Tmp_Filename, Filename);
+      -- Create symlink to keep uuid
+      Symlink (Filename, Ada.Directories.Containing_Directory (Filename) & "/.by-uuid/" & Uuid);
    end Download;
 end Casendra.Strata;

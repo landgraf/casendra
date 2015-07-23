@@ -1,5 +1,5 @@
 Name:            casendra
-Version:	 0.1
+Version:	 0.2
 Release:	 3%{?dist}
 Summary:	 Library and set of tools to work with strata
 
@@ -37,6 +37,9 @@ License: GPLv3+
 %build
 DEBUG=True make %{?_smp_mflags} BUILDER="gprbuild -p %{GPRbuild_optflags}"
 
+%check
+export LD_LIBRARY_PATH="%{buildroot}/%{_libdir}/:$LD_LIBRARY_PATH"
+make check
 
 %install
 %make_install prefix=%{buildroot}/%{_prefix} libdir=%{buildroot}/%{_libdir}
@@ -52,6 +55,7 @@ cd %{buildroot}/%{_libdir} && ln -s %{name}/lib%{name}.so.%{version} .
 %{_bindir}/%{name}_cli
 %{_bindir}/%{name}d
 %{_bindir}/csdownloader
+%{_bindir}/csclean
 
 %files devel
 %{_libdir}/%{name}/*.ali
@@ -67,6 +71,9 @@ cd %{buildroot}/%{_libdir} && ln -s %{name}/lib%{name}.so.%{version} .
 
 
 %changelog
+* Thu Jun 23 2015 Pavel Zhukov <pzhukov@redhat.com> - 0.2-1
+- New release (0.2)
+
 * Wed Jun  3 2015 Pavel Zhukov <pzhukov@redhat,com> - 0.1-3
 - Package template
 

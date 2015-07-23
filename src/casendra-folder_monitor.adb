@@ -27,12 +27,11 @@ package body casendra.folder_monitor is
       Casendra.Cases.Save_History (Working_On, Dir);
       Ada.Text_IO.Open (File, Ada.Text_IO.In_File, Full_Name (Item));
       if Ada.Text_IO.End_Of_File (File) then
-        for Index in 1 .. Casendra.Attachments.Attachments_P.Length (Casendra.Cases.Attachments (Working_On)) loop
-          Casendra.Cases.Download_Attachment (Working_On,
-                                              Integer (Index), 
-                                              Dir => Dir,
-                                              Callback => Display_Progress'Access);
-        end loop;
+         Casendra.Cases.Download_Attachment (Working_On,
+                                             Working_On.Attachments, 
+                                             Dir => Dir,
+                                             Callback => Display_Progress'Access);
+         
       else
         declare
           First_Line : constant String := Ada.Text_IO.Get_Line (File);

@@ -9,10 +9,13 @@ package body Casendra.Comment is
       return Element;
       
    end Init;
-
+   
    function To_Txt (Self : Comment_T) return String is
+      Unbounded_Return : Unbounded_String := Null_Unbounded_String;
    begin
-      return To_String (Self.Text); -- FIXME
+      Append (Unbounded_Return, "**" & Self.Created_By);
+      Append (Unbounded_Return, Self.Text);
+      return To_String (Unbounded_Return); -- FIXME
    end To_Txt;
 
 

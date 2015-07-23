@@ -12,23 +12,23 @@ package body Casendra.Attachments is
       Counter := 1;
       for Att of Obj loop
          if Numbered then
-            Put (Counter'Img & " => ");
+            Put (Counter'Img & "  ");
             Counter := Counter + 1;
          end if;
          if not Deprecated and Att.Deprecated then
-            goto Continue;
+            null;
+         else
+            Put_Line ("filename: " & To_String (Att.File_Name) & " ; Length = " & Natural'Image (Att.Length / 1024) & " Kb");
          end if;
-         Put_Line ("filename: " & To_String (Att.File_Name) & " ; Length = " & Natural'Image (Att.Length / 1024) & " Kb");
-         <<Continue>>
       end loop;
    end Print_All;
     
-   function Init (Case_Id : in String; Connection : in out Casendra.Strata.Connection_T) return Attachments_T is
-   -- curl -v -k -u $USER:$PASS -X GET -H 'Accept: application/xml' $HOST/rs/cases/$CASENUMBER/attachments -D - 
-      Retval        : Attachments_T;
-      Response_JSON : Gnatcoll.JSON.JSON_Value;
-      use GNATCOLL.JSON;
-     
+    function Init (Case_Id      : in String; 
+                   Connection                   : in out Casendra.Strata.Connection_T) return Attachments_T is
+       -- curl -v -k -u $USER:$PASS -X GET -H 'Accept: application/xml' $HOST/rs/cases/$CASENUMBER/attachments -D - 
+       Retval                   : Attachments_T;
+       Response_JSON            : Gnatcoll.JSON.JSON_Value;
+       use GNATCOLL.JSON;
    begin
       declare
          Response : constant String := Casendra.Strata.Get_Attachments_JSON (Case_Id, Connection);
@@ -69,5 +69,14 @@ package body Casendra.Attachments is
       Casendra.Attachment.Download (Obj (Index), Dir, Connection, Callback);
    end Download;
 
-
+   procedure Download (Obj              : in Attachments_T;
+                       Connection       : in out Casendra.Strata.Connection_T;
+                       Dir              : in String;
+                       Callback         : not null access procedure (Value      : in Natural)) is
+   begin
+      for Attach of Obj loop
+         Casendra.Attachment.Download (Attach, Dir, Connection, Callback);
+      end loop;
+   end Download;
+   
 end Casendra.Attachments;

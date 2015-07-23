@@ -1,4 +1,4 @@
-BUILDER ?= gprbuild -p -gnat12 -gnata
+BUILDER ?= gprbuild -p -gnat12 
 FLAGS ?=
 ifeq (${DEBUG}, True)
 	FLAGS +=  -gnata -ggdb -g -gnatVa
@@ -13,7 +13,7 @@ libdir ?= ${prefix}/lib
 bindir ?= ${prefix}/bin
 includedir ?= ${prefix}/include
 gprdir ?= ${prefix}/share/gpr
-VERSION = 0.1
+VERSION = 0.2
 export LIBRARY_TYPE ?= relocatable
 
 INSTALLER ?=  gprinstall -p --prefix=${prefix} --sources-subdir=${includedir}/${PROJECT} \
@@ -39,23 +39,30 @@ rpm: clean_rpm
 	rpmbuild -ba packaging/${NAME}-build.spec
 	rm -f packaging/${NAME}-build.spec
 
+check: build_tests
+	CASENDRA_CONFIG="${HOME}/.config/casendra_tests.conf" ./bin/testme
+
 build_libs:
 	${BUILDER} -P gnat/${PROJECT}_libs ${FLAGS} 
 
+build_tests: build_tools
+	${BUILDER} -P gnat/${PROJECT}_tests ${FLAGS}
+
 build_tools: build_libs
 	${BUILDER} -P gnat/${PROJECT}_tools ${FLAGS}
-	-cd bin && ln -s casendra_cli csdownloader && ln -s casendra_cli casendrad
+	-cd bin && ln -s casendra_cli csdownloader && ln -s casendra_cli casendrad && ln -s casendra_cli csclean
 
-build: build_libs build_tools
+build: build_libs build_tools 
 
 install:
 	${INSTALLER} -P gnat/${PROJECT}_libs
 	${INSTALLER} -P gnat/${PROJECT}_tools
-	-cd ${bindir} && ln -s casendra_cli csdownloader && ln -s casendra_cli casendrad
+	-cd ${bindir} && ln -s casendra_cli csdownloader && ln -s casendra_cli casendrad && ln -s casendra_cli csclean
 
 clean:
 	-gnat clean -P gnat/${PROJECT}_libs
 	-gnat clean -P gnat/${PROJECT}_tools
+	-gnat clean -P gnat/${PROJECT}_tests
 ## and control shoot to the head...
 	rm -rf bin/ obj/ lib/  tmp/ 
 

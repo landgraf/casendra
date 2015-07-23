@@ -38,7 +38,7 @@ package body Casendra.Comments is
    
    procedure Save_All (Self : in Comments_T;
                        Dir  : in String) is
-      Filename : constant String := Dir & "/comments.txt";
+      Filename : constant String := Dir & "/comments.org";
       File     : Ada.Text_IO.File_Type;
    begin
       if not Ada.Directories.Exists (Dir) then
@@ -57,7 +57,7 @@ package body Casendra.Comments is
          Ada.Text_IO.Create (File, Ada.Text_IO.Out_File, Filename);
       end if;
       -- Ada.Text_IO.Set_Line_Length (File, 100);
-      Ada.Text_IO.Put_Line ("Saving comments: " & Filename);
+      pragma Debug (Ada.Text_IO.Put_Line ("Saving comments: " & Filename));
       for Comment of Self loop
          declare
             Text : constant String := Casendra.Comment.To_Txt (Comment);

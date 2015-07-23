@@ -10,7 +10,7 @@ library project Casendra_Libs is
   for Library_Kind use "relocatable";
   for Library_Name use "casendra";
   for Languages use ("Ada");
-  for Library_Version use "lib" & Project'Library_Name & ".so." & "0.1";
+  for Library_Version use "lib" & Project'Library_Name & ".so." & "0.2";
 
   package Install is
     for Lib_Subdir use Directories.Lib & "/casendra/";

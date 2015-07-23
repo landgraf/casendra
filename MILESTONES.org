@@ -1,0 +1,27 @@
+** TODO Release 0.2 
+   SCHEDULED: <2015-08-01 Wed>
+|---------------------------------------+------------------+--------------+------|
+| Feature                               | Affcted part     | Completetion | Done |
+|---------------------------------------+------------------+--------------+------|
+| Clean attachements of closed cases    | :NEW: Cscleaner  |         100% | [x]  |
+| Donwload comments in Emacs org format | csdownloader     |    CANCELLED | [ ]  |
+| Download attachments based on aging   | csdownloader/lib |         100% | [x]  |
+| Filter out downloaded attachments     | csdownloader     |         100% | [x]  |
+| Add unit testing                      | cstest           |         100% | [x]  |
+|---------------------------------------+------------------+--------------+------|
+
+
+** DONE Release 0.1
+|------------------------------------+--------------+--------------+------|
+| Feature                            | Affcted part | Completetion | Done |
+|------------------------------------+--------------+--------------+------|
+| Progress indication of downloading | csdownloaded |         100% | [x]  |
+| Configuration of main variables    | lub          |         100% | [x]  |
+| Select attachments from list       | csdownloaded |         100% | [x]  |
+| Select comma separated attachments | csdownloaded |         100% | [x]  |
+| Filter user input                  | csdownloaded |         100% | [x]  |
+|------------------------------------+--------------+--------------+------|
+
+
+
+

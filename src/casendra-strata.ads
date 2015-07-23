@@ -4,14 +4,19 @@ package Casendra.Strata is
    
    type Connection_T is limited private;
    
-   function Get_Attachments_JSON (Case_Id : in String; Connection : in out Connection_T) return String;
-   function Get_Comments_JSON (Case_Id : in String; Connection : in out Connection_T) return String;
+   function Get_Attachments_JSON (Case_Id       : in     String;
+                                  Connection    : in out Connection_T) return String;
+   function Get_Comments_JSON (Case_Id          : in       String;
+                               Connection       : in out Connection_T) return String;
+   function Get_Case_JSON (Case_Id      : in     String;
+                           Connection   : in out Connection_T) return String;
    
    procedure Connect (Connection : out Connection_T);
    procedure Null_Progress (Value : in Natural) is null;
    
    procedure Download (URI                           : in String;
                        Length                        : in Natural;
+                       Uuid                          : in String;
                        Connection                    : in out Connection_T;
                        Filename                      : in String;
                        Overwrite                     : in Boolean := False;
